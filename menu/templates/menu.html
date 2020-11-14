@@ -5,6 +5,12 @@
     <title>Title</title>
 </head>
 <body>
-    <div>Меню</div>
+    <h2>Меню</h2>
+    <br>
+    {% for link in links %}
+        <div>
+            <a href="{{ link.url }}">{{ link.title }}</a>
+        </div>
+    {% endfor %}
 </body>
 </html>

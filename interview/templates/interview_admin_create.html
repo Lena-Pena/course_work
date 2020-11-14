@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Создать собеседование</title>
+</head>
+<body>
+    <form method="POST" action="{{ url_prefix }}/create">
+        <table>
+            <tr>
+                <td><label for="v_id">Вакансия</label></td>
+                <td>
+                    <select id="v_id" name="v_id">
+                        <option value="1">veb-programmer</option>
+                        <option value="2">backender</option>
+                        <option value="3">frontender</option>
+                        <option value="4">eco-engineer</option>
+                        <option value="5">manager</option>
+                        <option value="6">veb-programmer</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="salary">Оклад</label></td>
+                <td><input type="number" id="salary" name="salary"></td>
+            </tr>
+            <tr>
+                <td><label for="iv_date">Дата проведения</label></td>
+                <td><input type="date" id="iv_date" name="iv_date"></td>
+            </tr>
+            <tr>
+                <td><label for="dep_number">Номер отдела</label></td>
+                <td><input type="number" id="dep_number" name="dep_number"></td>
+            </tr>
+            <tr>
+                <td><label for="emp_id">Собеседующий</label></td>
+                <td>
+                    <select id="emp_id" name="emp_id">
+                        <option value="1">Sidorov</option>
+                        <option value="2">Abramov</option>
+                        <option value="3">Sitnicov</option>
+                        <option value="4">Petrichuk</option>
+                        <option value="5">Nemtsov</option>
+                        <option value="6">Pavlov</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <button type="submit">Создать</button>
+    </form>
+</body>
+</html>

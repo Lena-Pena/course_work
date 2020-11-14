@@ -1,7 +1,7 @@
 import mysql.connector
 
 
-class MySqlService:
+class UseDatabase:
     def __init__(self, config: dict):
         self._config = config
         self._conn = None

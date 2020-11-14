@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Собеседования</title>
+</head>
+<body>
+    <div id="app">
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Дата</th>
+                <th>Вакансия</th>
+                <th>Зарплата</th>
+                <th>Кандидат</th>
+                <th>Результат</th>
+            </tr>
+        </table>
+        {% for interview in interviews %}
+            <tr>
+                <td>{{ interview.id }}</td>
+                <td>{{ interview.date }}</td>
+                <td>{{ interview.vacancy }}</td>
+                <td>{{ interview.salary }}</td>
+                <td>{{ interview.candidate }}</td>
+                {% if interview.result == 'Yes' %}
+                    <td style="color: limegreen">{{ interview.result }}</td>
+                {% else %}
+                    <td style="color: indianred">{{ interview.result }}</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </div>
+</body>
+</html>

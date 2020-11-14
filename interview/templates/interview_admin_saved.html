@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Собеседования</title>
+</head>
+<body>
+    <div id="app">
+        <h2>Собеседования</h2>
+        <br>
+        <table>
+            <tr>
+                <td><a href="{{ main_page }}">Меню</a></td>
+                <td>/</td>
+                <td><a href="/interview">Собеседования</a></td>
+                <td>/</td>
+                <td>Сохраненные</td>
+            </tr>
+        </table>
+        <br>
+        <!-- выводим сообщение, если есть -->
+        {% if message is not none or message != '' %}
+            <div style="color: red">{{ message }}</div>
+        {% endif %}
+        <h3>Текущие собеседования</h3>
+        <table border="1">
+            <tr>
+                <th>ID</th>
+                <th>Дата</th>
+                <th>Вакансия</th>
+                <th>Зарплата</th>
+                <th>Собеседующий</th>
+                <th>Кандидат</th>
+                <th>Результат</th>
+{#                <th></th>#}
+            </tr>
+            {% for interview in interviews %}
+                <tr>
+                    <td>{{ interview.id }}</td>
+                    <td>{{ interview.date }}</td>
+                    <td>{{ interview.vacancy }}</td>
+                    <td>{{ interview.salary }}</td>
+                    <td>{{ interview.employee }}</td>
+                    <td>{{ interview.candidate }}</td>
+                    {% if interview.result == 'Yes' %}
+                        <td style="color: limegreen">{{ interview.result }}</td>
+                    {% else %}
+                        <td style="color: indianred">{{ interview.result }}</td>
+                    {% endif %}
+    {#                <td>#}
+    {#                    <input type="hidden" name="interview_id" value="{{ interview.id }}">#}
+    {#                    <form action="/interview/delete" method="POST">#}
+    {#                        <button type="submit">-</button>#}
+    {#                    </form>#}
+    {#                </td>#}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+</body>
+</html>

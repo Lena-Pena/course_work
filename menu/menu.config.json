@@ -1,0 +1,18 @@
+[
+  {
+    "url": "/interview",
+    "title": "Собеседования"
+  },
+  {
+    "url": "/query",
+    "title": "Запрос"
+  },
+  {
+    "url": "/reports",
+    "title": "Отчеты"
+  },
+  {
+    "url": "/auth/logout",
+    "title": "Выйти"
+  }
+]
