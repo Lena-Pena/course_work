@@ -5,21 +5,80 @@
     <title>Созданные собеседования</title>
 </head>
 <body>
-    <h2>Собеседования</h2>
-    <br>
-    <table>
-        <tr>
-            <td><a href="{{ main_page }}">Меню</a></td>
-            <td>/</td>
-            <td><a href="{{ url_prefix }}">Собеседования</a></td>
-            <td>/</td>
-            <td>Созданные</td>
-        </tr>
-    </table>
-    <div>
-        Вы еще ничего не создали!
-    </div>
-    <br>
-    <a href="{{ url_prefix }}/create">Создать собеседование</a>
+    <header>
+        <h2>Созданные собеседования</h2>
+
+        <table>
+            <tr>
+                <td><a href="/menu">Меню</a></td>
+                <td>/</td>
+                <td><a href="/interview">Собеседования</a></td>
+                <td>/</td>
+                <td>Созданные собеседования</td>
+            </tr>
+        </table>
+    </header>
+
+    <main>
+        <br>
+        {% if interviews == none %}
+            <div>Созданных собеседований нет</div>
+        {% else %}
+            <div>
+                <table border="1">
+                    <tr>
+                        <th colspan="4">Кандидат</th>
+                        <th colspan="6">Собеседование</th>
+                    </tr>
+                    <tr>
+                        <th>Имя</th>
+                        <th>Адрес</th>
+                        <th>Пол</th>
+                        <th>Возраст</th>
+
+                        <th>Оклад</th>
+                        <th>Дата</th>
+                        <th>Вакансия</th>
+                        <th>Собеседующий</th>
+                        <th>Номер отдела</th>
+
+                        <th></th>
+                    </tr>
+
+                    {% for interview in interviews %}
+                        <tr>
+                            <td>{{ interview['candidate']['name'] }}</td>
+                            <td>{{ interview['candidate']['address'] }}</td>
+                            <td>{{ interview['candidate']['gender'] }}</td>
+                            <td>{{ interview['candidate']['age'] }}</td>
+
+                            <td>{{ interview['interview']['v_id'] }}</td>
+                            <td>{{ interview['interview']['salary'] }}</td>
+                            <td>{{ interview['interview']['iv_date'] }}</td>
+                            <td>{{ interview['interview']['emp_id'] }}</td>
+                            <td>{{ interview['interview']['dep_number'] }}</td>
+
+                            <td>
+                                <form action="/interview/delete" method="POST">
+                                    <input type="hidden" name="interview_id" value="{{ interview['id'] }}">
+                                    <button type="submit">-</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    <tr>
+                        <td colspan="10">
+                            <form action="/interview/save" method="POST">
+                                <button type="submit">Сохранить</button>
+                            </form>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        {% endif %}
+        <br>
+        <a href="/interview/create">Создать собеседование</a>
+    </main>
 </body>
 </html>

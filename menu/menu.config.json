@@ -10,9 +10,5 @@
   {
     "url": "/reports",
     "title": "Отчеты"
-  },
-  {
-    "url": "/auth/logout",
-    "title": "Выйти"
   }
 ]

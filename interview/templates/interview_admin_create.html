@@ -2,51 +2,99 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Создать собеседование</title>
+    <title>Новое собеседование</title>
 </head>
 <body>
-    <form method="POST" action="{{ url_prefix }}/create">
+    <header>
+        <h2>Новое собеседование</h2>
+
         <table>
             <tr>
-                <td><label for="v_id">Вакансия</label></td>
-                <td>
-                    <select id="v_id" name="v_id">
-                        <option value="1">veb-programmer</option>
-                        <option value="2">backender</option>
-                        <option value="3">frontender</option>
-                        <option value="4">eco-engineer</option>
-                        <option value="5">manager</option>
-                        <option value="6">veb-programmer</option>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td><label for="salary">Оклад</label></td>
-                <td><input type="number" id="salary" name="salary"></td>
-            </tr>
-            <tr>
-                <td><label for="iv_date">Дата проведения</label></td>
-                <td><input type="date" id="iv_date" name="iv_date"></td>
-            </tr>
-            <tr>
-                <td><label for="dep_number">Номер отдела</label></td>
-                <td><input type="number" id="dep_number" name="dep_number"></td>
-            </tr>
-            <tr>
-                <td><label for="emp_id">Собеседующий</label></td>
-                <td>
-                    <select id="emp_id" name="emp_id">
-                        <option value="1">Sidorov</option>
-                        <option value="2">Abramov</option>
-                        <option value="3">Sitnicov</option>
-                        <option value="4">Petrichuk</option>
-                        <option value="5">Nemtsov</option>
-                        <option value="6">Pavlov</option>
-                    </select>
-                </td>
+                <td><a href="/menu">Меню</a></td>
+                <td>/</td>
+                <td><a href="/interview">Собеседования</a></td>
+                <td>/</td>
+                <td><a href="/interview/created">Созданные собеседования</a></td>
+                <td>/</td>
+                <td>Новое собеседование</td>
             </tr>
         </table>
-        <button type="submit">Создать</button>
-    </form>
+    </header>
+
+    <main>
+        <br>
+        <form method="POST" action="/interview/create">
+            <table border="1">
+                <tr><th colspan="2">Данные кандидата</th></tr>
+
+                <tr>
+                    <td><label for="candidate_name">Имя<span style="color: red">*</span></label></td>
+                    <td><input type="text" id="candidate_name" name="candidate_name" required></td>
+                </tr>
+                <tr>
+                    <td><label for="candidate_address">Адрес</label></td>
+                    <td><input type="text" id="candidate_address" name="candidate_address"></td>
+                </tr>
+                <tr>
+                    <td><label for="candidate_gender">Пол<span style="color: red">*</span></label></td>
+                    <td>
+                        <select id="candidate_gender" name="candidate_gender" required>
+                            <option value="male">Мужской</option>
+                            <option value="female">Женский</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="candidate_age">Возраст<span style="color: red">*</span></label></td>
+                    <td><input type="number" min="18" max="100" id="candidate_age" name="candidate_age" required></td>
+                </tr>
+
+                <tr><th colspan="2">Данные собеседования</th></tr>
+
+                <tr>
+                    <td><label for="v_id">Вакансия<span style="color: red">*</span></label></td>
+                    <td>
+                        <select id="v_id" name="v_id" required>
+                            <option value="1">web-programmer</option>
+                            <option value="2">backender</option>
+                            <option value="3">frontender</option>
+                            <option value="4">eco-engineer</option>
+                            <option value="5">manager</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="salary">Оклад<span style="color: red">*</span></label></td>
+                    <td><input type="number" id="salary" min="40000" max="500000" step="5000" name="salary" required></td>
+                </tr>
+                <tr>
+                    <td><label for="iv_date">Дата проведения<span style="color: red">*</span></label></td>
+                    <td><input type="date" id="iv_date" name="iv_date" required></td>
+                </tr>
+                <tr>
+                    <td><label for="dep_number">Номер отдела</label></td>
+                    <td><input type="number" id="dep_number" name="dep_number"></td>
+                </tr>
+                <tr>
+                    <td><label for="emp_id">Собеседующий<span style="color: red">*</span></label></td>
+                    <td>
+                        <select id="emp_id" name="emp_id" required>
+                            <option value="1">Sidorov</option>
+                            <option value="2">Abramov</option>
+                            <option value="3">Sitnicov</option>
+                            <option value="4">Petrichuk</option>
+                            <option value="5">Nemtsov</option>
+                            <option value="6">Pavlov</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <button type="submit">Создать</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </main>
 </body>
 </html>

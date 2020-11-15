@@ -2,15 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Меню</title>
 </head>
 <body>
-    <h2>Меню</h2>
+    <header>
+        <h2>Меню</h2>
+    </header>
     <br>
     {% for link in links %}
         <div>
             <a href="{{ link.url }}">{{ link.title }}</a>
         </div>
     {% endfor %}
+    <br>
+    <div>
+        <a href="/auth/logout">Выход</a>
+    </div>
 </body>
 </html>
