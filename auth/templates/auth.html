@@ -5,26 +5,31 @@
     <title>Вход в систему</title>
 </head>
 <body>
-    <div id="app">
+    <header>
+        <h2>Вход в систему</h2>
+    </header>
+
+    <main>
         <!-- выводим сообщение, если есть -->
         {% if message is not none or message != '' %}
             <div style="color: red">{{ message }}</div>
         {% endif %}
 
         <form method="post" action="/auth/" autocomplete="off">
-            <label for="username">
-                Username
-                <input autocomplete="off" name="username" type="text" required>
-            </label>
-            <label for="password">
-                Password
-                <input autocomplete="off" name="password" type="password" required>
-            </label>
-            <button type="submit">
-                Войти
-            </button>
+            <table>
+                <tr>
+                    <td><label for="username">Username</label></td>
+                    <td><input id="username" autocomplete="off" name="username" type="text" required></td>
+                </tr>
+                <tr>
+                    <td><label for="password">Password</label></td>
+                    <td><input id="password" autocomplete="off" name="password" type="password" required></td>
+                </tr>
+                <tr>
+                   <td colspan="2" align="right"><button type="submit">Войти</button></td>
+                </tr>
+            </table>
         </form>
-        <br>
-    </div>
+    </main>
 </body>
 </html>

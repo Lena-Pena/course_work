@@ -14,7 +14,7 @@
                 <td>/</td>
                 <td><a href="/interview">Собеседования</a></td>
                 <td>/</td>
-                <td>Созданные собеседования</td>
+                <td>Назначение кандидатов</td>
             </tr>
         </table>
     </header>
@@ -68,8 +68,8 @@
                     {% endfor %}
 
                     <tr>
-                        <td colspan="10">
-                            <form action="/interview/save" method="POST">
+                        <td colspan="10" align="right">
+                            <form action="/interview/confirm_appointment" method="POST">
                                 <button type="submit">Сохранить</button>
                             </form>
                         </td>
@@ -78,7 +78,7 @@
             </div>
         {% endif %}
         <br>
-        <a href="/interview/create">Создать собеседование</a>
+        <a href="/interview/appoint">Назначить кандидата</a>
     </main>
 </body>
 </html>
