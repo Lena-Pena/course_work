@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Выбор кандидата</title>
+</head>
+<body>
+<header>
+<h2>Выбор кандидата</h2>
+
+<table>
+    <tr>
+        <td><a href="/menu">Меню</a></td>
+        <td>/</td>
+        <td><a href="/interview">Собеседования</a></td>
+        <td>/</td>
+        <td><a href="/interview/appointed">Назначение кандидатов</a></td>
+        <td>/</td>
+        <td>Выбор кандидата</td>
+    </tr>
+</table>
+</header>
+
+<main>
+    <h3>Выберите кандидата для назначения</h3>
+    {% if candidates == none %}
+    <div>Доступные кандидаты отсутствуют</div>
+    {% else %}
+    <form action="/interview/appointment/pick_candidates" method="POST">
+        <table border="1">
+            <tr>
+                <th>Имя</th>
+                <th>Возраст</th>
+                <th>Пол</th>
+                <th>Адрес</th>
+                <th></th>
+            </tr>
+            {% for candidate in candidates %}
+            <tr title="{{ candidate.c_id }}">
+                <td>{{ candidate.name }}</td>
+                <td>{{ candidate.age }}</td>
+                <td>{{ candidate.gender }}</td>
+                <td>{{ candidate.address }}</td>
+                <td>
+                    <label>
+                        <input type="radio" name="candidate_id" value="{{ candidate.c_id }}">
+                    </label>
+                </td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="5" align="right">
+                    <button type="submit">Выбрать</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+    {% endif %}
+</main>
+</body>
+</html>

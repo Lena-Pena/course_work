@@ -8,68 +8,6 @@ interview_blueprint = Blueprint('interview_blueprint', __name__, template_folder
 
 
 # noinspection PyUnresolvedReferences
-@interview_blueprint.route('/appoint', methods=['POST', 'GET'])
-@check_auth
-def interview_blueprint_route_create():
-    if request.method == 'GET':
-        return render_template('interview_appoint_admin.html')
-    elif request.method == 'POST':
-        if 'appointment' not in session:
-            session['appointment'] = []
-
-        interviews = session['appointment']
-        form = request.form
-
-        if len(interviews):
-            new_interview_id = interviews[-1]['id'] + 1
-        else:
-            new_interview_id = 1
-
-        new_interview = {
-            'id': new_interview_id,
-            'candidate': {
-                'name': form.get('candidate_name'),
-                'address': form.get('candidate_address'),
-                'gender': form.get('candidate_gender'),
-                'age': form.get('candidate_age')
-            },
-            'interview': {
-                'v_id': form.get('v_id'),
-                'salary': form.get('salary'),
-                'iv_date': form.get('iv_date'),
-                'dep_number': form.get('dep_number'),
-                'emp_id': form.get('emp_id')
-            }
-        }
-
-        interviews.append(new_interview)
-        # Нужно переприсваивать
-        session['appointment'] = interviews
-
-        return redirect('/interview/created')
-
-
-@interview_blueprint.route('/remove', methods=['POST'])
-@check_auth
-def interview_blueprint_route_delete():
-    if request.method != 'POST':
-        return 'Unknown action'
-
-    interviews = session['appointment']
-    interview_to_delete_id = int(request.form.get('interview_id'))
-
-    interviews = [
-        interview
-        for interview in interviews
-        if interview['id'] != interview_to_delete_id
-    ]
-
-    session['appointment'] = interviews
-
-    return redirect('/interview/created')
-
-
-# noinspection PyUnresolvedReferences
 @interview_blueprint.route('/', methods=['GET'])
 @check_auth
 def interview_blueprint_route_root():
@@ -91,7 +29,7 @@ def interview_blueprint_route_root():
 # noinspection PyUnresolvedReferences
 @interview_blueprint.route('/list', methods=['GET'])
 @check_auth
-def interview_blueprint_route_saved():
+def interview_blueprint_route_list():
     current_role = get_current_role()
 
     if request.method != 'GET':
@@ -171,7 +109,7 @@ def interview_blueprint_route_saved():
 # noinspection PyUnresolvedReferences
 @interview_blueprint.route('/appointed', methods=['GET'])
 @check_auth
-def interview_blueprint_route_created():
+def interview_blueprint_route_appointed():
     current_role = get_current_role()
 
     if current_role != 'admin':
@@ -180,69 +118,58 @@ def interview_blueprint_route_created():
     if request.method != 'GET':
         return 'Unknown action'
 
-    appointment = session['appointment'] if 'appointment' in session else {}
+    if 'appointment' not in session:
+        session['appointment'] = {
+            'interview_id': None,
+            'candidate_ids': []
+        }
 
-    current_interview_id = appointment['interview_id'] if 'interview_id' in appointment else None
-    candidate_ids = appointment['candidate_ids'] if 'candidate_ids' in appointment else None
+    current_interview_id = session['appointment']['interview_id']
+    candidate_ids = session['appointment']['candidate_ids']
 
     with UseDatabase(current_app.config['db'][current_role]) as cursor:
-        get_remain_candidates_query = """
-        select c_id, name from candidates
-        """
-
-        candidate_ids_query_chunk = ','.join(str(candidate_ids))
-
-        if candidate_ids:
-            get_remain_candidates_query += f"""where c_id not in ({candidate_ids_query_chunk})"""
-
-        get_interviews_query = f"""
-        select
-            i.iv_id,
-            i.salary,
-            e.name as employee,
-            i.iv_date,
-            v.position
-        from interview i
-        join employee e on e.emp_id = i.emp_id
-        join vacancy v on i.v_id = v.v_id
-        where 
-            iv_id not in (select distinct iv_id from interview_result)
-        order by i.iv_id;
-        """
-
-        cursor.execute(get_remain_candidates_query)
-        remaining_candidates = make_dict_list_from_rows(cursor)
-
-        cursor.execute(get_interviews_query)
-        interviews = make_dict_list_from_rows(cursor)
-
-        available_interviews = [
-            interview
-            for interview in interviews
-            if interview['iv_id'] != current_interview_id
-        ]
-
-        if
-
-        if candidate_ids:
-            get_appointed_candidates_details_query = f"""
-            select c_id, name, address, gender, age
-            from candidates
-            where c_id in ({candidate_ids_query_chunk})
+        if current_interview_id:
+            get_interviews_query = f"""
+            select
+                i.iv_id,
+                i.salary,
+                e.name as employee,
+                i.iv_date,
+                v.position
+            from interview i
+            join employee e on e.emp_id = i.emp_id
+            join vacancy v on i.v_id = v.v_id
+            where
+                iv_id = {current_interview_id}
+            order by i.iv_id;
             """
-            cursor.execute(get_appointed_candidates_details_query)
-            appointed_candidates = make_dict_list_from_rows(cursor)
+
+            cursor.execute(get_interviews_query)
+            result_row = make_dict_list_from_rows(cursor)
+            interview = result_row[0] if result_row else None
         else:
-            appointed_candidates = []
+            interview = None
 
-        return render_template('interview_appointed_admin.html',
-                               available_interviews=available_interviews,
-                               remaining_candidates=remaining_candidates,)
+        if candidate_ids:
+            get_appointed_candidates_query = f"""
+            select c_id, name, age, gender, address
+            from candidate
+            where c_id in ({','.join(str(id) for id in candidate_ids)})
+            """
+
+            cursor.execute(get_appointed_candidates_query)
+            candidates = make_dict_list_from_rows(cursor)
+        else:
+            candidates = []
+
+    return render_template('interview_appointed_admin.html',
+                           interview=interview,
+                           candidates=candidates if candidates else None)
 
 
-@interview_blueprint.route('/confirm_appointment', methods=['POST'])
+@interview_blueprint.route('/appointment/confirm', methods=['POST'])
 @check_auth
-def interview_blueprint_route_save():
+def interview_blueprint_route_appointment_confirm():
     current_role = get_current_role()
 
     if current_role != 'admin':
@@ -251,56 +178,188 @@ def interview_blueprint_route_save():
     if request.method != 'POST':
         return 'Unknown action'
 
-    interviews = session['appointment']
+    if 'appointment' not in session:
+        return redirect('/interview/list')
 
-    if not interviews:
-        return redirect('/interview/created')
+    appointment = session['appointment']
+    interview_id = appointment['interview_id']
+    candidate_ids = appointment['candidate_ids']
 
-    for interview in interviews:
+    if not interview_id or not candidate_ids:
+        return redirect('/interview/list')
+
+    with UseDatabase(current_app.config['db'][current_role]) as cursor:
+        for candidate_id in candidate_ids:
+            appoint_candidates_query = f"""
+            insert
+            into interview_result (c_id, iv_id)
+            values ({candidate_id}, {interview_id})
+            """
+
+            cursor.execute(appoint_candidates_query)
+
+    session.pop('appointment')
+
+    return redirect('/interview/list')
+
+
+@interview_blueprint.route('/appointment/clear_candidates', methods=['POST'])
+def interview_blueprint_rout_appointment_clear_candidates():
+    current_role = get_current_role()
+
+    if current_role != 'admin':
+        return redirect('/menu')
+
+    if request.method != 'POST':
+        return 'Unknown action'
+
+    if 'appointment' not in session:
+        session['appointment'] = {
+            'interview_id': None,
+            'candidate_ids': []
+        }
+
+    appointment = session['appointment']
+    interview_id = appointment['interview_id']
+
+    session['appointment'] = {
+        'interview_id': interview_id,
+        'candidate_ids': []
+    }
+
+    return redirect('/interview/appointed')
+
+
+@interview_blueprint.route('/appointment/remove_candidate', methods=['POST'])
+@check_auth
+def interview_blueprint_route_appointment_remove_candidate():
+    current_role = get_current_role()
+
+    if current_role != 'admin':
+        return redirect('/menu')
+
+    if 'appointment' not in session:
+        session['appointment'] = {
+            'interview_id': None,
+            'candidate_ids': []
+        }
+
+    appointment = session['appointment']
+    candidate_ids = appointment['candidate_ids']
+
+    candidate_id_to_remove = int(request.form.get('candidate_id'))
+
+    if candidate_id_to_remove in candidate_ids:
+        candidate_ids.remove(candidate_id_to_remove)
+
+    session['appointment'] = {
+        'interview_id': appointment['interview_id'],
+        'candidate_ids': candidate_ids
+    }
+
+    return redirect('/interview/appointed')
+
+
+@interview_blueprint.route('/appointment/pick_candidates', methods=['GET', 'POST'])
+@check_auth
+def interview_blueprint_route_appointment_pick_candidate():
+    current_role = get_current_role()
+
+    if current_role != 'admin':
+        return redirect('/menu')
+
+    if 'appointment' not in session:
+        session['appointment'] = {
+            'interview_id': None,
+            'candidate_ids': []
+        }
+
+    appointment = session['appointment']
+    candidate_ids = appointment['candidate_ids']
+
+    if request.method == 'POST':
+        new_candidate_id = int(request.form.get('candidate_id'))
+
+        candidate_ids.append(new_candidate_id)
+
+        session['appointment'] = {
+            'interview_id': appointment['interview_id'],
+            'candidate_ids': candidate_ids
+        }
+
+        return redirect('/interview/appointed')
+    elif request.method == 'GET':
         with UseDatabase(current_app.config['db'][current_role]) as cursor:
-            candidate_data = interview['candidate']
-            interview_data = interview['interview']
+            if candidate_ids:
+                query_chunk = " where c_id not in (" +\
+                              ','.join(str(id) for id in candidate_ids) +\
+                              ')'
+            else:
+                query_chunk = ""
 
-            candidate_address = f"""'{candidate_data['address']}'""" if candidate_data['address'] else 'null'
-
-            create_candidate_query = f"""
-            INSERT INTO candidate (name, address, gender, age) VALUES ('{
-                candidate_data['name']
-            }', {
-                candidate_address
-            }, '{
-                candidate_data['gender']
-            }', { candidate_data['age'] })
+            get_candidates_query = f"""
+            select c_id, name, age, gender, address from candidate {query_chunk}
             """
 
-            cursor.execute(create_candidate_query)
+            cursor.execute(get_candidates_query)
+            candidates = make_dict_list_from_rows(cursor)
 
-            get_created_candidate_id_query = f"""SELECT MAX(c_id) FROM candidate"""
+            return render_template('interview_appointment_pick_candidates_admin.html',
+                                   candidates=candidates if candidates else None)
+    else:
+        return 'Unknown action'
 
-            cursor.execute(get_created_candidate_id_query)
-            result = cursor.fetchall()
 
-            created_candidate_id = int(result[0][0])
+@interview_blueprint.route('/appointment/pick_interview', methods=['GET', 'POST'])
+@check_auth
+def interview_blueprint_route_appointment_pick_interview():
+    current_role = get_current_role()
 
-            # Вставляем ID созданного кандидата
-            create_interview_query = f"""
-            INSERT INTO interview (salary, iv_date, c_id, emp_id, v_id, dep_number) VALUES ('{
-                interview_data['salary']
-            }', '{
-                interview_data['iv_date']
-            }', {
-                created_candidate_id
-            }, {
-                interview_data['emp_id']
-            }, {
-                interview_data['v_id']
-            }, {
-                interview_data['dep_number'] if interview_data['dep_number'] else 'null' 
-            })
+    if current_role != 'admin':
+        return redirect('/menu')
+
+    if 'appointment' not in session:
+        session['appointment'] = {
+            'interview_id': None,
+            'candidate_ids': []
+        }
+
+    if request.method == 'POST':
+        session['appointment'] = {
+            'interview_id': int(request.form.get('interview_id')),
+            'candidate_ids': session['appointment']['candidate_ids']
+        }
+        return redirect('/interview/appointed')
+    elif request.method == 'GET':
+        appointment = session['appointment'] \
+            if 'appointment' in session \
+            else {}
+
+        current_interview_id = appointment['interview_id'] \
+            if 'interview_id' in appointment \
+            else None
+
+        with UseDatabase(current_app.config['db'][current_role]) as cursor:
+            get_interviews_query = """
+            select
+                i.iv_id,
+                i.salary,
+                e.name as employee,
+                i.iv_date,
+                v.position
+            from interview i
+            join employee e on e.emp_id = i.emp_id
+            join vacancy v on i.v_id = v.v_id
+            where iv_id not in (select distinct iv_id from interview_result) and iv_id != 4
+            order by i.iv_id
             """
 
-            cursor.execute(create_interview_query)
+            cursor.execute(get_interviews_query)
 
-    session['appointment'] = None
+            interviews = make_dict_list_from_rows(cursor)
 
-    return redirect('/interview/saved')
+            return render_template('interview_appointment_pick_interview_admin.html',
+                                   interviews=interviews,
+                                   interview_id=current_interview_id)
+    else:
+        return 'Unknown action'
