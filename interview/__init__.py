@@ -88,20 +88,16 @@ def interview_blueprint_route_list():
             # Добавить, чтоб выводились собсеседования конкретного employee
             worker_id = get_current_user_id()
 
-            get_interview_query = """
+            get_interview_query = f"""
             SELECT
-                iv_id as id,
-                iv_date as date,
-                v.position as vacancy,
-                salary
-                c.name as candidate
-                result
-                FROM interview
-                JOIN candidate c on interview.c_id = c.c_id
-                JOIN vacancy v on interview.v_id = v.v_id;
+                where worker_id = {worker_id}
             """
 
-            return 'Not ready'
+            cursor.execute(get_interview_query)
+            interviews = make_dict_list_from_rows(cursor)
+
+            return render_template('interview_list_worker.html',
+                                   interviews=interviews)
         else:
             return 'Error. You are not permitted to view this page'
 

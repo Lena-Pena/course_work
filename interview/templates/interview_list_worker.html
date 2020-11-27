@@ -21,19 +21,18 @@
     <main>
         <table>
             <tr>
-                <th>ID</th>
                 <th>Дата</th>
                 <th>Вакансия</th>
-                <th>Зарплата</th>
+                <th>Ставка</th>
                 <th>Кандидат</th>
                 <th>Результат</th>
+                <th>Оценка</th>
             </tr>
         </table>
         {% for interview in interviews %}
-            <tr>
-                <td>{{ interview.id }}</td>
+            <tr title="{{ interview.iv_id }}">
                 <td>{{ interview.date }}</td>
-                <td>{{ interview.vacancy }}</td>
+                <td>{{ interview.position }}</td>
                 <td>{{ interview.salary }}</td>
                 <td>{{ interview.candidate }}</td>
                 {% if interview.result == 'Yes' %}
@@ -41,6 +40,7 @@
                 {% else %}
                     <td style="color: indianred">{{ interview.result }}</td>
                 {% endif %}
+                <td>{{ interview.rating }} / 10</td>
             </tr>
         {% endfor %}
     </main>
