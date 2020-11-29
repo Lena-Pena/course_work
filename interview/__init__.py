@@ -21,7 +21,7 @@ def interview_blueprint_route_root():
     elif current_role == 'admin':
         return render_template('interview_menu.html')
     elif current_role == 'worker':
-        return 'Not ready'
+        return redirect('/interview/list')
     else:
         return 'You are not permitted to see this page'
 
@@ -90,7 +90,18 @@ def interview_blueprint_route_list():
 
             get_interview_query = f"""
             SELECT
-                where worker_id = {worker_id}
+                i.iv_date as date,
+                v.position, 
+                i.salary, 
+                c.name as candidate, 
+                iv.result, 
+                iv.rating 
+            from interview_result iv
+            join interview i on iv.iv_id = i.iv_id
+            join candidate c on iv.c_id = c.c_id
+            join employee e on i.emp_id = e.emp_id
+            join vacancy v on i.v_id = v.v_id
+            where e.emp_id = {worker_id}
             """
 
             cursor.execute(get_interview_query)

@@ -2,7 +2,7 @@
   "admin": {
     "host" : "127.0.0.1",
     "user" : "admin",
-    "password" : "123",
+    "password" : "1234",
     "database" : "kursach"
   },
   "guest": {
@@ -14,7 +14,7 @@
   "worker": {
     "host" : "127.0.0.1",
     "user" : "worker",
-    "password" : "345",
+    "password" : "456",
     "database" : "kursach"
   }
 }

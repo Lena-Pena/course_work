@@ -12,14 +12,14 @@
             <tr>
                 <td><a href="/menu">Меню</a></td>
                 <td>/</td>
-                <td><a href="/interview">Собеседования</a></td>
+                <td><a href="/interview/">Собеседования</a></td>
                 <td>/</td>
                 <td>Сохраненные собеседования</td>
             </tr>
         </table>
     </header>
     <main>
-        <table>
+        <table border="1">
             <tr>
                 <th>Дата</th>
                 <th>Вакансия</th>
@@ -28,7 +28,7 @@
                 <th>Результат</th>
                 <th>Оценка</th>
             </tr>
-        </table>
+
         {% for interview in interviews %}
             <tr title="{{ interview.iv_id }}">
                 <td>{{ interview.date }}</td>
@@ -43,6 +43,7 @@
                 <td>{{ interview.rating }} / 10</td>
             </tr>
         {% endfor %}
+        </table>
     </main>
 </body>
 </html>
