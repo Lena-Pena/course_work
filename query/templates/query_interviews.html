@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Рейтинги собеседований</title>
+</head>
+<body>
+    <header>
+        <h2>Рейтинги собеседований</h2>
+
+        <table>
+            <tr>
+                <td><a href="/menu">Меню</a></td>
+                <td>/</td>
+                <td><a href="/query">Запросы</a></td>
+                <td>/</td>
+                <td>Рейтинги собеседований</td>
+            </tr>
+        </table>
+    </header>
+    <br>
+    <main>
+        <form action="/query/interviews" method="POST">
+            Все интервью, у которых
+            <span>
+                <label>
+                    рейтинг
+                    <select name="sign">
+                        <option value=">" {{ 'selected' if sign == '>' }}>&gt;</option>
+                        <option value="<" {{ 'selected' if sign == '<' }}>&lt;</option>
+                    </select>
+                </label>
+            </span>
+            чем
+            <span>
+               <label>
+                   <input type="number" min="0" max="10" step="1" name="rating" value="{{ rating }}">
+               </label>
+            </span>
+            <button type="submit">Показать</button>
+        </form>
+        <br>
+        <table border="1">
+            <tr>
+                <th>Позиция</th>
+                <th>Кандидат</th>
+                <th>Ставка</th>
+                <th>Дата собеседования</th>
+                <th>Интервьюер</th>
+                <th>Рейтинг</th>
+                <th>Результат</th>
+            </tr>
+            {% for iv in interviews %}
+                <tr>
+                    <td title="ID вакансии: {{ iv.v_id }}">{{ iv.position }}</td>
+                    <td title="ID кандидата: {{ iv.cd_id }}">{{ iv.c_name }}</td>
+                    <td>{{ iv.i_salary }}</td>
+                    <td>{{ iv.iv_date }}</td>
+                    <td title="ID интервьюера: {{ iv.emp_id }}">{{ iv.e_name }}</td>
+                    <td>{{ iv.rating }}</td>
+                    <td>{{ iv.result }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </main>
+</body>
+</html>

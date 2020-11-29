@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Запрос уволенных сотрудников</title>
+</head>
+<body>
+    <header>
+        <h2>Запрос уволенных сотрудников</h2>
+
+        <table>
+            <tr>
+                <td><a href="/menu">Меню</a></td>
+                <td>/</td>
+                <td><a href="/query">Запросы</a></td>
+                <td>/</td>
+                <td>Запрос уволенных сотрудников</td>
+            </tr>
+        </table>
+    </header>
+    <br>
+    <main>
+        <form action="/query/employees" method="POST">
+            Все уволенные сотрудники за
+            <span>
+                <label>
+                   <input placeholder="любой" type="number" min="1900" max="2200" step="1" name="year" value="{{ year }}">
+                </label>
+            </span>
+            год
+            <button type="submit">Показать</button>
+        </form>
+        <br>
+        <table border="1">
+            <tr>
+                <th>Имя</th>
+                <th>Ставка</th>
+                <th>Образование</th>
+                <th>Дата приема</th>
+                <th>Дата увольнения</th>
+            </tr>
+            {% for e in emps %}
+                <tr title="ID сотрудника: {{ e.emp_id }}">
+                    <td>{{ e.name }}</td>
+                    <td>{{ e.salary }}</td>
+                    <td>{{ e.education }}</td>
+                    <td>{{ e.reception_date }}</td>
+                    <td>{{ e.layoff_date }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </main>
+</body>
+</html>

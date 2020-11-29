@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Запросы</title>
+</head>
+<body>
+<header>
+    <h2>Запросы</h2>
+
+    <table>
+        <tr>
+            <td><a href="/menu">Меню</a></td>
+            <td>/</td>
+            <td>Запросы</td>
+        </tr>
+    </table>
+    <br>
+    <main>
+        <menu>
+            {% if is_admin %}
+            <li><a href="/query/interviews">Рейтинги собеседований</a></li>
+            {% endif %}
+            <li><a href="/query/employees">Уволенные сотрудники</a></li>
+            <li><a href="/query/vacancies">История вакансий</a></li>
+        </menu>
+    </main>
+</header>
+</body>
+</html>

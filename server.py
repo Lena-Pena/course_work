@@ -6,6 +6,7 @@ from flask import Flask, redirect
 from auth import auth_blueprint, check_auth
 from menu import menu_blueprint
 from interview import interview_blueprint
+from query import query_blueprint
 
 app = Flask(__name__, template_folder="templates")
 
@@ -18,6 +19,7 @@ app.config['db'] = json.load(open('data_files/db.config.json'))
 app.register_blueprint(auth_blueprint, url_prefix='/auth')
 app.register_blueprint(menu_blueprint, url_prefix='/menu')
 app.register_blueprint(interview_blueprint, url_prefix='/interview')
+app.register_blueprint(query_blueprint, url_prefix='/query')
 
 
 # Для сессии

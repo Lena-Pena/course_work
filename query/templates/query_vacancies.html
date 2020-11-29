@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Запрос истории вакансий</title>
+</head>
+<body>
+    <header>
+        <h2>Запрос истории вакансий</h2>
+
+        <table>
+            <tr>
+                <td><a href="/menu">Меню</a></td>
+                <td>/</td>
+                <td><a href="/query">Запросы</a></td>
+                <td>/</td>
+                <td>Запрос истории вакансий</td>
+            </tr>
+        </table>
+    </header>
+    <br>
+    <main>
+        <form action="/query/vacancies" method="POST">
+            Все вакансии открытые в
+            <span>
+                <label>
+                   <input placeholder="любом" type="number" min="1900" max="2200" step="1" name="year" value="{{ year }}">
+                </label>
+            </span>
+            году
+            <button type="submit">Показать</button>
+        </form>
+        <br>
+        <table border="1">
+            <tr>
+                <th>Позиция</th>
+                <th>Дата открытия</th>
+                <th>Дата закрытия</th>
+            </tr>
+            {% for v in vacancies %}
+                <tr title="ID вакансии: {{ v.v_id }}">
+                    <td>{{ v.position }}</td>
+                    <td>{{ v.opening_date }}</td>
+                    <td>{{ v.closing_date }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </main>
+</body>
+</html>

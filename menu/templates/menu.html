@@ -8,15 +8,12 @@
     <header>
         <h2>Меню</h2>
     </header>
-    <br>
-    {% for link in links %}
-        <div>
-            <a href="{{ link.url }}">{{ link.title }}</a>
-        </div>
-    {% endfor %}
-    <br>
-    <div>
-        <a href="/auth/logout">Выход</a>
-    </div>
+    <menu>
+        {% for link in links %}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+        {% endfor %}
+        <br>
+        <li><a href="/auth/logout">Выход</a></li>
+    </menu>
 </body>
 </html>
