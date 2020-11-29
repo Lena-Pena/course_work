@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Отчет</title>
+</head>
+<body>
+<header>
+    <h2>Отчет</h2>
+
+    <table>
+        <tr>
+            <td><a href="/menu">Меню</a></td>
+            <td>/</td>
+            <td>Отчет</td>
+        </tr>
+    </table>
+    <br>
+    <main>
+        <form action="/report/result" method="POST">
+            Отчет за
+            <span>
+                <label>
+                   <input required type="number" min="1900" max="2200" step="1" name="year" value="{{ year }}">
+                </label>
+            </span>
+            год
+            <button type="submit">Показать</button>
+        </form>
+    </main>
+</header>
+</body>
+</html>

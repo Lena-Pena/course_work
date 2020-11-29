@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Отчет</title>
+</head>
+<body>
+<header>
+    <h2>Отчет</h2>
+
+    <table>
+        <tr>
+            <td><a href="/menu">Меню</a></td>
+            <td>/</td>
+            <td><a href="/report">Отчет</a></td>
+            <td>/</td>
+            <td>Результат</td>
+        </tr>
+    </table>
+    <br>
+    <main>
+        <h3>Отчет за {{ year }} год</h3>
+        <table border="1">
+            <tr>
+                <th>Департамент</th>
+                <th>Количество сотрудников</th>
+            </tr>
+            {% for row in records %}
+                <tr title="ID: {{ row.id_s_t }}, год: {{ row.st_year }}">
+                    <td>{{ row.department }}</td>
+                    <td>{{ row.count_employee }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </main>
+</header>
+</body>
+</html>

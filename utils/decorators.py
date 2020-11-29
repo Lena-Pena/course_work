@@ -3,11 +3,11 @@ from flask import request
 from auth import get_current_role
 
 
-def allow_methods(allowed_methods):
+def allow_methods(allowed_methods, callback=None):
     def allow_methods_decorated(fn):
         def decorated(*args, **kwargs):
             if request.method not in allowed_methods:
-                return 'Method is not allowed'
+                return callback() if callback else 'Method is not allowed'
 
             return fn(*args, **kwargs)
 
@@ -22,7 +22,7 @@ def allow_roles(allowed_roles, callback=None):
     def allow_roles_decorated(fn):
         def decorated(*args, **kwargs):
             if get_current_role() not in allowed_roles:
-                return callback if callback else 'Page is not allowed to view'
+                return callback() if callback else 'Page is not allowed to view'
 
             return fn(*args, **kwargs)
 

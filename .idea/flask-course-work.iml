@@ -13,6 +13,7 @@
         <option value="$MODULE_DIR$/auth/templates" />
         <option value="$MODULE_DIR$/menu/templates" />
         <option value="$MODULE_DIR$/query/templates" />
+        <option value="$MODULE_DIR$/report/templates" />
       </list>
     </option>
   </component>

@@ -8,7 +8,7 @@
     "title": "Запросы"
   },
   {
-    "url": "/reports",
-    "title": "Отчеты"
+    "url": "/report",
+    "title": "Отчет"
   }
 ]
