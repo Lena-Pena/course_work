@@ -6,44 +6,46 @@
 </head>
 <body>
     <header>
-        <h2>Сохраненные собеседования</h2>
+        <h2>Собеседования</h2>
 
         <table>
             <tr>
                 <td><a href="/menu">Меню</a></td>
                 <td>/</td>
-                <td><a href="/interview/">Собеседования</a></td>
-                <td>/</td>
-                <td>Сохраненные собеседования</td>
+                <td>Собеседования</td>
             </tr>
         </table>
     </header>
     <main>
-        <table border="1">
-            <tr>
-                <th>Дата</th>
-                <th>Вакансия</th>
-                <th>Ставка</th>
-                <th>Кандидат</th>
-                <th>Результат</th>
-                <th>Оценка</th>
-            </tr>
-
-        {% for interview in interviews %}
-            <tr title="{{ interview.iv_id }}">
-                <td>{{ interview.date }}</td>
-                <td>{{ interview.position }}</td>
-                <td>{{ interview.salary }}</td>
-                <td>{{ interview.candidate }}</td>
-                {% if interview.result == 'Yes' %}
-                    <td style="color: limegreen">{{ interview.result }}</td>
-                {% else %}
-                    <td style="color: indianred">{{ interview.result }}</td>
-                {% endif %}
-                <td>{{ interview.rating }} / 10</td>
-            </tr>
-        {% endfor %}
-        </table>
+        <br>
+        {% if interviews %}
+            <table border="1">
+                <tr>
+                    <th>Дата</th>
+                    <th>Вакансия</th>
+                    <th>Ставка</th>
+                    <th>Кандидат</th>
+                    <th>Результат</th>
+                    <th>Оценка</th>
+                </tr>
+                {% for interview in interviews %}
+                    <tr title="{{ interview.iv_id }}">
+                        <td>{{ interview.date }}</td>
+                        <td>{{ interview.position }}</td>
+                        <td>{{ interview.salary }}</td>
+                        <td>{{ interview.candidate }}</td>
+                        {% if interview.result == 'Yes' %}
+                            <td style="color: limegreen">{{ interview.result }}</td>
+                        {% else %}
+                            <td style="color: indianred">{{ interview.result }}</td>
+                        {% endif %}
+                        <td>{{ interview.rating }} / 10</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <div>Собеседования отсутствуют</div>
+        {% endif %}
     </main>
 </body>
 </html>

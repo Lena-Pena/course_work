@@ -12,7 +12,7 @@ menu_blueprint = Blueprint('menu_blueprint', __name__, template_folder='template
 @check_auth
 def menu_blueprint_route_menu():
     try:
-        menu_config = open('menu/menu.config.json', 'r')
+        menu_config = open('data_files/menu.config.json', 'r')
         links = json.load(menu_config)
 
         return render_template('menu.html', links=links)

@@ -12,7 +12,7 @@ app = Flask(__name__, template_folder="templates")
 # app.config = {
 #  'db': { json-файл с настройками подключения БД }
 # }
-app.config['db'] = json.load(open('db.config.json'))
+app.config['db'] = json.load(open('data_files/db.config.json'))
 
 # Регистирурем блюпринты
 app.register_blueprint(auth_blueprint, url_prefix='/auth')
