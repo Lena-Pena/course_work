@@ -1,7 +1,6 @@
 from flask import Blueprint, session, redirect, request, render_template, current_app
 
-from utils.UseDatabase import UseDatabase
-from utils.qb import QB
+from utils.UseDatabase import UseDatabase, DBConnectionError, DBCredentialError, DBBaseError, DBSQLError
 
 
 # Проверить, если есть актинвая сессия, то продолжить,
@@ -64,44 +63,51 @@ def auth_blueprint_route_root():
         return render_template('auth.html', message="Пароль не заполнен!")
 
     # Здесь надо заветси еще одного пользователя
-    with UseDatabase(current_app.config['db']['guest']) as connection:
-        find_user_query = f"""
-            SELECT * FROM user WHERE login = "{username}" AND password = "{password}" 
-        """
+    try:
+        with UseDatabase(current_app.config['db']['guest']) as connection:
+            find_user_query = f"""
+                SELECT * FROM user WHERE login = "{username}" AND password = "{password}" 
+            """
 
-        connection.execute(find_user_query)
-        result = connection.fetchall()
+            connection.execute(find_user_query)
+            result = connection.fetchall()
 
-        has_user = len(result) > 0
+            has_user = len(result) > 0
 
-        if not has_user:
-            return render_template('auth.html', message="Некорректные данные!")
+            if not has_user:
+                return render_template('auth.html', message="Некорректные данные!")
 
-        found_user = result[0]
+            found_user = result[0]
 
-        user_id = found_user[0]
-        role_id = found_user[1]
+            user_id = found_user[0]
+            role_id = found_user[1]
 
-        get_role_name_query = QB() \
-            .select('role_name') \
-            .from_table('role') \
-            .where('role_id = {}'.format(role_id)) \
-            .build()
+            get_role_name_query = f"""
+            select role_name from role where role_id = {role_id}
+            """
 
-        connection.execute(get_role_name_query)
-        result = connection.fetchall()
+            connection.execute(get_role_name_query)
+            result = connection.fetchall()
 
-        role_name = result[0][0]
+            role_name = result[0][0]
 
-        if not role_name:
-            return render_template('auth.html', message="Привилегии пользователя не определены!")
+            if not role_name:
+                return render_template('auth.html', message="Привилегии пользователя не определены!")
 
-        session['user'] = {
-            'user_id': user_id,
-            'role_name': role_name
-        }
+            session['user'] = {
+                'user_id': user_id,
+                'role_name': role_name
+            }
 
-        return redirect('/menu')
+            return redirect('/menu')
+    except DBConnectionError as e:
+        return 'Произошла ошибка соединения'
+    except DBCredentialError as e:
+        return 'Не удается войти в бд'
+    except DBBaseError as e:
+        return 'Произошла непредвиденная ошибка бд'
+    except DBSQLError as e:
+        return 'Ошибка базы данных'
 
 
 @auth_blueprint.route('/logout', methods=['GET'])
