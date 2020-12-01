@@ -50,9 +50,6 @@ def auth_blueprint_route_root():
     if request.method == 'GET':
         return render_template('auth.html')
 
-    elif request.method != 'POST':
-        return 'Unknown request'
-
     username = request.form.get('username')
     password = request.form.get('password')
 
@@ -64,35 +61,35 @@ def auth_blueprint_route_root():
 
     # Здесь надо заветси еще одного пользователя
     try:
-        with UseDatabase(current_app.config['db']['guest']) as connection:
+        with UseDatabase(current_app.config['db']['guest']) as cursor:
             find_user_query = f"""
-                SELECT * FROM user WHERE login = "{username}" AND password = "{password}" 
+            SELECT * FROM user WHERE login = "{username}" AND password = "{password}" 
             """
 
-            connection.execute(find_user_query)
-            result = connection.fetchall()
+            cursor.execute(find_user_query)
+            result = cursor.fetchall()
 
             has_user = len(result) > 0
 
             if not has_user:
                 return render_template('auth.html', message="Некорректные данные!")
 
-            found_user = result[0]
-
-            user_id = found_user[0]
-            role_id = found_user[1]
+            user_id = result[0][0]
+            role_id = result[0][1]
 
             get_role_name_query = f"""
             select role_name from role where role_id = {role_id}
             """
 
-            connection.execute(get_role_name_query)
-            result = connection.fetchall()
+            cursor.execute(get_role_name_query)
+            result = cursor.fetchall()
+
+            has_role = len(result) > 0
+
+            if not has_role:
+                return render_template('auth.html', message="Привилегии пользователя не определены!")
 
             role_name = result[0][0]
-
-            if not role_name:
-                return render_template('auth.html', message="Привилегии пользователя не определены!")
 
             session['user'] = {
                 'user_id': user_id,
@@ -115,4 +112,4 @@ def auth_blueprint_route_logout():
     if 'user' in session:
         session.pop('user')
 
-    return redirect('/menu')
+    return redirect('/auth')

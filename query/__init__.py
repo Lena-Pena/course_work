@@ -1,18 +1,19 @@
-from flask import Blueprint, render_template, request, current_app
+from flask import Blueprint, render_template, request, current_app, redirect
 
 from auth import check_auth, get_current_role
 from utils import make_dict_list_from_rows
 from utils.UseDatabase import UseDatabase, DBConnectionError, DBCredentialError, DBBaseError, DBSQLError
-from utils.decorators import allow_roles
 
 query_blueprint = Blueprint('query_blueprint', __name__, template_folder='templates')
 
 
 @query_blueprint.route('/', methods=['GET'])
 @check_auth
-@allow_roles(['admin', 'worker'])
 def query_blueprint_route_root():
     current_role = get_current_role()
+
+    if current_role not in ['admin', 'worker']:
+        return redirect('/menu')
 
     is_admin = current_role == 'admin'
 
@@ -22,9 +23,12 @@ def query_blueprint_route_root():
 
 @query_blueprint.route('/interviews', methods=['GET', 'POST'])
 @check_auth
-@allow_roles(['admin'])
 def query_blueprint_route_interviews():
     current_role = get_current_role()
+
+    if current_role not in ['admin']:
+        return redirect('/menu')
+
     form = request.form if request.method == 'POST' else None
 
     try:
@@ -74,9 +78,12 @@ def query_blueprint_route_interviews():
 
 @query_blueprint.route('/employees', methods=['GET', 'POST'])
 @check_auth
-@allow_roles(['admin', 'worker'])
 def query_blueprint_route_employees():
     current_role = get_current_role()
+
+    if current_role not in ['admin', 'worker']:
+        return redirect('/menu')
+
     form = request.form if request.method == 'POST' else None
 
     try:
@@ -115,9 +122,12 @@ def query_blueprint_route_employees():
 
 @query_blueprint.route('/vacancies', methods=['GET', 'POST'])
 @check_auth
-@allow_roles(['admin', 'worker'])
 def query_blueprint_route_vacancies():
     current_role = get_current_role()
+
+    if current_role not in ['admin', 'worker']:
+        return redirect('/menu')
+
     form = request.form if request.method == 'POST' else None
 
     try:

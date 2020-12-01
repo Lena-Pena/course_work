@@ -3,7 +3,6 @@ from flask import Blueprint, render_template, request, current_app, redirect
 from auth import check_auth, get_current_role
 from utils import make_dict_list_from_rows
 from utils.UseDatabase import UseDatabase, DBConnectionError, DBCredentialError, DBBaseError, DBSQLError
-from utils.decorators import allow_roles, allow_methods
 
 
 def redirect_to_root():
@@ -15,17 +14,26 @@ report_blueprint = Blueprint('report_blueprint', __name__, template_folder='temp
 
 @report_blueprint.route('/')
 @check_auth
-@allow_roles(['admin'])
 def report_blueprint_root():
+    current_role = get_current_role()
+
+    if current_role not in ['admin']:
+        return redirect('/menu')
+
     return render_template('report_root.html')
 
 
 @report_blueprint.route('/result', methods=['POST'])
 @check_auth
-@allow_methods(['POST'], redirect_to_root)
-@allow_roles(['admin'])
 def report_blueprint_root():
+    if request.method != 'POST':
+        return 'Unknown action'
+
     current_role = get_current_role()
+
+    if current_role not in ['admin']:
+        return redirect('/menu')
+
     year = request.form.get('year')
 
     try:

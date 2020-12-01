@@ -17,7 +17,7 @@ def interview_blueprint_route_root():
         return 'Unknown action'
 
     if current_role == 'guest':
-        return redirect('/')
+        return redirect('/menu')
     elif current_role == 'admin':
         return render_template('interview_menu.html')
     elif current_role == 'worker':
